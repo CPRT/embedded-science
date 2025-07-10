@@ -59,8 +59,6 @@ static void MX_CAN_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-CAN_TxHeaderTypeDef TxHeader;
-CAN_RxHeaderTypeDef RxHeader;
 
 uint32_t TxMailbox;
 
@@ -72,33 +70,17 @@ uint8_t RxData[8];
 uint8_t SensorI2Val = 12;
 uint8_t SensorAnalVal = 6;
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0,&RxHeader, RxData);   //increment during call back - by notification
 
-	if (RxHeader.DLC ==2)
-	{
-		if (RxData[0] == 1){
-			SetTxDataSensor(TxData,SensorI2Val);
-		}
-		if (RxData[0]==2){
-			SetTxDataSensor(TxData,SensorAnalVal);
-		}
-		SensorDatacheck = 1;
-
-
-
-	}
-
-}
-
-void SetTxDataSensor(uint8_t TxData[8], uint8_t value){
-	TxData[1] = value;
-
-}
-
-void TransmitSensorData(){
-	HAL_CAN_AddTxMessage(&hcan,&TxHeader, TxData, &TxMailbox);
+void sendCanMessage(uint32_t id, uint8_t data*, uint8_t length){
+  CAN_TxHeaderTypeDef TxHeader;
+  TxHeader.DLC = 2; // specifies length of data
+  TxHeader.ExtId = 0; // specifies extended ID
+  TxHeader.IDE = CAN_ID_STD; //specifies message identifier between standard and remote
+  TxHeader.RTR = CAN_RTR_DATA;     //specifies transferring data or remote frame
+  TxHeader.StdId = 0x000;  // can be any hex address, up to 11 bit
+  TxHeader.TransmitGlobalTime = DISABLE;
+  // TODO: Implement logic for if the message is >8 bytes
+  HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox); // send the message
 }
 
 /* USER CODE END 0 */
@@ -140,14 +122,6 @@ int main(void)
   HAL_CAN_Start(&hcan);
   HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING);
 
-  //Transmit data frame configuration
-
-  TxHeader.DLC = 2; // specifies length of data
-  TxHeader.ExtId = 0; // specifies extended ID
-  TxHeader.IDE = CAN_ID_STD; //specifies message identifier between standard and remote
-  TxHeader.RTR = CAN_RTR_DATA;     //specifies transferring data or remote frame
-  TxHeader.StdId = 0x000;  // can be any hex address, up to 11 bit
-  TxHeader.TransmitGlobalTime = DISABLE;
 
 
   /* USER CODE END 2 */
@@ -156,14 +130,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-	  if (SensorDatacheck){
-		  TransmitSensorData();
-		  HAL_Delay(500);
-		  SensorDatacheck = 0;
-	  }
-
-    /* USER CODE BEGIN 3 */
+    // TODO MAIN Loop
   }
   /* USER CODE END 3 */
 }
