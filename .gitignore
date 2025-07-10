@@ -1,55 +1,35 @@
-# Prerequisites
-*.d
+# STM32CubeIDE specific
+.settings/
+.metadata/
+*.launch
+*.ioc
 
-# Object files
-*.o
-*.ko
-*.obj
+# Build artifacts
+build/
+Debug/
+Release/
 *.elf
-
-# Linker output
-*.ilk
+*.hex
+*.bin
 *.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
+*.lst
+*.o
+*.d
+*.su
+*.dep
 *.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
 *.exe
 *.out
-*.app
-*.i*86
-*.x86_64
-*.hex
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+# Backup and temporary files
+*~
+*.swp
+*.bak
+*.tmp
+*.log
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
-*.dwo
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
