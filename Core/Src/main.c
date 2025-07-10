@@ -70,6 +70,10 @@ uint8_t RxData[8];
 uint8_t SensorI2Val = 12;
 uint8_t SensorAnalVal = 6;
 
+// TODO: Define the CAN message IDs for Ozone and Hydrogen sensors
+uint32_t ozoneMsgId = 0;
+uint32_t hydrogenMsgId = 0;
+
 
 void sendCanMessage(uint32_t id, uint8_t data*, uint8_t length){
   CAN_TxHeaderTypeDef TxHeader;
@@ -81,6 +85,14 @@ void sendCanMessage(uint32_t id, uint8_t data*, uint8_t length){
   TxHeader.TransmitGlobalTime = DISABLE;
   // TODO: Implement logic for if the message is >8 bytes
   HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox); // send the message
+}
+
+double getOzoneConcentration(/*Add any parameters needed*/){
+
+}
+
+double getHydrogenConcentration(/*Add any parameters needed*/){
+
 }
 
 /* USER CODE END 0 */
@@ -130,7 +142,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // TODO MAIN Loop
+    double ozoneConcentration = getOzoneConcentration(/*Add any parameters needed*/);
+    double hydrogenConcentration = getHydrogenConcentration(/*Add any parameters needed*/);
+    sendCanMessage(ozoneMsgId, &ozoneConcentration, sizeof(ozoneConcentration));
+    sendCanMessage(hydrogenMsgId, &hydrogenConcentration, sizeof(hydrogenConcentration));
+    HAL_Delay(1000); // Delay for 1 second before sending the next message
   }
   /* USER CODE END 3 */
 }
