@@ -59,6 +59,47 @@ static void MX_CAN_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+CAN_TxHeaderTypeDef TxHeader;
+CAN_RxHeaderTypeDef RxHeader;
+
+uint32_t TxMailbox;
+
+uint8_t SensorDatacheck;
+
+uint8_t TxData[8];
+uint8_t RxData[8];
+
+uint8_t SensorI2Val = 12;
+uint8_t SensorAnalVal = 6;
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0,&RxHeader, RxData);   //increment during call back - by notification
+
+	if (RxHeader.DLC ==2)
+	{
+		if (RxData[0] == 1){
+			SetTxDataSensor(TxData,SensorI2Val);
+		}
+		if (RxData[0]==2){
+			SetTxDataSensor(TxData,SensorAnalVal);
+		}
+		SensorDatacheck = 1;
+
+
+
+	}
+
+}
+
+void SetTxDataSensor(uint8_t TxData[8], uint8_t value){
+	TxData[1] = value;
+
+}
+
+void TransmitSensorData(){
+	HAL_CAN_AddTxMessage(&hcan,&TxHeader, TxData, &TxMailbox);
+}
 
 /* USER CODE END 0 */
 
@@ -95,6 +136,20 @@ int main(void)
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
+
+  HAL_CAN_Start(&hcan);
+  HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING);
+
+  //Transmit data frame configuration
+
+  TxHeader.DLC = 2; // specifies length of data
+  TxHeader.ExtId = 0; // specifies extended ID
+  TxHeader.IDE = CAN_ID_STD; //specifies message identifier between standard and remote
+  TxHeader.RTR = CAN_RTR_DATA;     //specifies transferring data or remote frame
+  TxHeader.StdId = 0x000;  // can be any hex address, up to 11 bit
+  TxHeader.TransmitGlobalTime = DISABLE;
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -102,6 +157,11 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	  if (SensorDatacheck){
+		  TransmitSensorData();
+		  HAL_Delay(500);
+		  SensorDatacheck = 0;
+	  }
 
     /* USER CODE BEGIN 3 */
   }
@@ -179,6 +239,21 @@ static void MX_CAN_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN_Init 2 */
+
+  CAN_FilterTypeDef canfilterconfig;
+
+  canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
+  canfilterconfig.FilterBank = 10;
+  canfilterconfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+  canfilterconfig.FilterIdHigh = 0x000;
+  canfilterconfig.FilterIdLow = 0x000;
+  canfilterconfig.FilterMaskIdHigh = 0x000;
+  canfilterconfig.FilterMaskIdLow = 0x0000;
+  canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  canfilterconfig.SlaveStartFilterBank = 0;
+
+  HAL_CAN_ConfigFilter(&hcan,&canfilterconfig);
 
   /* USER CODE END CAN_Init 2 */
 
