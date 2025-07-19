@@ -13,8 +13,6 @@ static CAN_TxHeaderTypeDef TxHeader = {.ExtId = 0, .IDE = CAN_ID_STD, .RTR = CAN
 
 static uint32_t TxMailbox;
 static uint32_t RxMailBox;
-static uint8_t TxData[8];
-static uint8_t RxData[8];
 
 
 void can_init(/*take in any parameters needed*/) {
