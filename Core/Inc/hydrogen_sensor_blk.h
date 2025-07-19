@@ -6,7 +6,6 @@
  */
 
 #ifndef INC_HYDROGEN_SENSOR_BLK_H_
-extern float Ro;
 #define INC_HYDROGEN_SENSOR_BLK_H_
 
 
