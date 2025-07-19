@@ -12,17 +12,19 @@
 #define RL_VALUE 10
 #define RO_CLEAN_AIR_FACTOR 9.21
 
-float sense;
-char msg[20];
-float H2Curve[3] = {2.3, 0.93, -1.44};
-float Ro = 10;
+static float Ro;
+static const float H2Curve[] = {2.3, 0.93, -1.44}
 
 void hydrogen_sensor_init(/*add any parameters needed*/) {
-	float MQResistanceCalculation(float raw_adc){
+	Ro = MQCalibration();
+	return;
+}
+
+static float MQResistanceCalculation(float raw_adc){
 	return (((float)RL_VALUE*(4095-raw_adc)/raw_adc));
 }
 
-float MQCalibration(){
+static float MQCalibration(){
 	float val = 0;
 	for (int i = 0; i < 50; i++){
 		HAL_ADC_Start(&hadc1);
@@ -35,7 +37,7 @@ float MQCalibration(){
 	return val;
 }
 
-float MQRead(){
+static float MQRead(){
 	float rs = 0;
 	for(int i = 0; i <50; i++){
 		HAL_ADC_Start(&hadc1);
@@ -47,12 +49,11 @@ float MQRead(){
 	rs = rs/50;
 	return rs;
 }
-	return;
+
+static double MQGetPercentage(float rs_ro_ratio, float *pcurve){
+	return(pow(10,(((log(rs_ro_ratio)-pcurve[1])/pcurve[2])+pcurve[0])));
 }
 
 double hydrogen_sensor_read() {
-	double MQGetPercentage(float rs_ro_ratio, float *pcurve){
-	return(pow(10,(((log(rs_ro_ratio)-pcurve[1])/pcurve[2])+pcurve[0])));
-}
 	return MQGetPercentage(MQRead()/Ro, H2Curve);
 }
