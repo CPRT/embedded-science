@@ -109,7 +109,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  hydrogen_sensor_init();
+  hydrogen_sensor_init(&hadc1);
   ozone_sensor_init();
   can_init();
 
@@ -122,7 +122,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  double hydrogen_reading = hydrogen_sensor_read();
+	  double hydrogen_reading = hydrogen_sensor_read(&hadc1);
 	  double ozone_reading = ozone_sensor_read();
 	  can_send(HYDROGEN_MSG_ID, (uint8_t*)&hydrogen_reading, sizeof(hydrogen_reading));
 	  can_send(OZONE_MSG_ID, (uint8_t*)&ozone_reading, sizeof(ozone_reading));
