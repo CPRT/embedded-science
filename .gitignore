@@ -22,7 +22,6 @@
 *.crf
 
 # Project metadata
-*.ioc
 !.gitignore
 !.clang-format
 
