@@ -51,6 +51,8 @@ float MQRead(){
 }
 
 double hydrogen_sensor_read() {
-	//TODO: Implement me
-	return 1.0;
+	double MQGetPercentage(float rs_ro_ratio, float *pcurve){
+	return(pow(10,(((log(rs_ro_ratio)-pcurve[1])/pcurve[2])+pcurve[0])));
+}
+	return MQGetPercentage(MQRead()/Ro, H2Curve);
 }
