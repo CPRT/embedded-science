@@ -26,10 +26,7 @@
 !.clang-format
 
 # IDE-specific
-.project
-.cproject
 .autosave
-.mxproject
 .metadata/
 *.swp
 
