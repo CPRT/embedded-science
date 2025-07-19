@@ -37,6 +37,7 @@
 /* USER CODE BEGIN PD */
 #define OZONE_MSG_ID 100
 #define HYDROGEN_MSG_ID 101
+#define OZONE_ADDRESS_3 0x73
 
 /* USER CODE END PD */
 
@@ -109,8 +110,10 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  OzoneSensor ozone_handle;
+
   hydrogen_sensor_init();
-  ozone_sensor_init();
+  ozone_sensor_init(&ozone_handle, &hi2c1, OZONE_ADDRESS_3);
   can_init();
 
   /* USER CODE END 2 */
@@ -123,7 +126,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  double hydrogen_reading = hydrogen_sensor_read();
-	  double ozone_reading = ozone_sensor_read();
+	  double ozone_reading = ozone_sensor_read(&ozone_handle);
+	  if (ozone_reading - 20 > 1 || ozone_reading - 20 < -1) {
+		  continue;
+	  }
 	  can_send(HYDROGEN_MSG_ID, (uint8_t*)&hydrogen_reading, sizeof(hydrogen_reading));
 	  can_send(OZONE_MSG_ID, (uint8_t*)&ozone_reading, sizeof(ozone_reading));
   }
