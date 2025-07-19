@@ -1,35 +1,45 @@
-# STM32CubeIDE specific
-.settings/
-.metadata/
+# STM32CubeIDE / STM32CubeMX
+/.settings/
+/Debug/
+/Release/
+/build/
+/out/
+/MX_*
 *.launch
-*.ioc
-
-# Build artifacts
-build/
-Debug/
-Release/
-*.elf
-*.hex
-*.bin
-*.map
-*.lst
+*.log
+*.bak
+*.dep
 *.o
 *.d
+*.elf
+*.map
+*.lst
+*.axf
+*.bin
+*.hex
+*.srec
 *.su
-*.dep
-*.a
-*.exe
-*.out
+*.crf
 
-# Backup and temporary files
-*~
+# Project metadata
+*.ioc
+!.gitignore
+!.clang-format
+
+# IDE-specific
+.project
+.cproject
+.autosave
+.mxproject
+.metadata/
 *.swp
-*.bak
-*.tmp
-*.log
 
-# IDEs and OS
-.vscode/
-.idea/
+# Backup files
+*~
+*.tmp
+*.orig
+
+# OS-specific
 .DS_Store
 Thumbs.db
+ehthumbs.db
