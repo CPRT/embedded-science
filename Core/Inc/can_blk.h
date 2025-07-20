@@ -9,10 +9,11 @@
 #define INC_CAN_BLK_H_
 #include <stdint.h>
 #include <stddef.h>
+#include "stm32f1xx_hal.h"
 
-void can_init(/*take in any parameters needed*/);
+void can_init(CAN_HandleTypeDef* hcan);
 
-void can_send(uint32_t msg_id, uint8_t* data, size_t length);
+void can_send(CAN_HandleTypeDef* hcan, uint32_t msg_id, uint8_t* data, size_t length);
 
 
 

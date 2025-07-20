@@ -114,7 +114,7 @@ int main(void)
 
   hydrogen_sensor_init(&hadc1);
   ozone_sensor_init(&ozone_handle, &hi2c1, OZONE_ADDRESS_3);
-  can_init();
+  can_init(&hcan);
 
   /* USER CODE END 2 */
 
@@ -127,8 +127,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  double hydrogen_reading = hydrogen_sensor_read(&hadc1);
 	  double ozone_reading = ozone_sensor_read(&ozone_handle);
-	  can_send(HYDROGEN_MSG_ID, (uint8_t*)&hydrogen_reading, sizeof(hydrogen_reading));
-	  can_send(OZONE_MSG_ID, (uint8_t*)&ozone_reading, sizeof(ozone_reading));
+	  can_send(&hcan, HYDROGEN_MSG_ID, (uint8_t*)&hydrogen_reading, sizeof(hydrogen_reading));
+	  can_send(&hcan, OZONE_MSG_ID, (uint8_t*)&ozone_reading, sizeof(ozone_reading));
   }
   /* USER CODE END 3 */
 }
